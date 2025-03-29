@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { initialiseEconomyData, simulateEconomyMonth, formatCurrency, consumptionFraction } from '../utils/economicModel';
 
-
 // Async thunk to initialise the economy
 export const initialiseEconomy = createAsyncThunk(
   'simulator/initialiseEconomy',
@@ -47,6 +46,8 @@ const initialState = {
     },
     debtPercentage: 0,
     deficitPercentage: 0,
+    incomeBrackets: { low: 10000, medium: 20000 },
+    taxRates: { low: 10, medium: 20, high: 30 }
   },
   centralBank: {
     interestRate: 5,
@@ -83,10 +84,12 @@ const simulatorSlice = createSlice({
   initialState,
   reducers: {
     updateGovernmentPolicy: (state, action) => {
-      const { corporateTax, salesTax, spending } = action.payload;
+      const { corporateTax, salesTax, spending, incomeBrackets, taxRates } = action.payload;
       state.government.corporateTaxRate = corporateTax;
       state.government.salesTaxRate = salesTax;
       state.government.spendingPercentages = spending;
+      state.government.incomeBrackets = incomeBrackets;
+      state.government.taxRates = taxRates;
     },
     adjustInterestRate: (state, action) => {
       state.centralBank.interestRate = action.payload;

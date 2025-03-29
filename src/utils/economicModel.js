@@ -2,7 +2,7 @@
 //
 // This file implements an advanced economic simulation engine in plain JavaScript.
 // It generates a state with people, companies, government, central bank, stock market
-// and macro history. It then simulates month‐to‐month updates with many interdependent variables.
+// and macro history. It then simulates month-to-month updates with many interdependent variables.
 // All state objects returned are plain objects so they can be safely stored in Redux.
 
 import { v4 as uuidv4 } from 'uuid';
@@ -141,7 +141,9 @@ export async function initialiseEconomyData() {
       infrastructure: 5,
     },
     debtPercentage: 0,
-    deficitPercentage: 0
+    deficitPercentage: 0,
+    incomeBrackets: { low: 10000, medium: 20000 },
+    taxRates: { low: 10, medium: 20, high: 30 }
   };
 
   // Central Bank initial settings.
@@ -273,6 +275,10 @@ export async function simulateEconomyMonth(currentState) {
   for (const key in currentState.macroHistory) {
     newMacroHistory[key] = [...currentState.macroHistory[key], macroStats[key]];
   }
+
+  // Ensure population growth through relationships and family formation
+  const newPopulation = currentState.people.length + Math.floor(Math.random() * 100);
+  updatedPeople.push(...generatePeople(newPopulation - currentState.people.length));
 
   // Return the new complete state.
   return {
